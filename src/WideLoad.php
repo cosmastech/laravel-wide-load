@@ -135,10 +135,7 @@ class WideLoad
 
     public function increment(string $key, int $amount = 1): static
     {
-        /** @var int $current */
-        $current = $this->get($key, 0);
-
-        $this->data[$key] = $current + $amount;
+        $this->data[$key] = ((int) $this->get($key, 0)) + $amount; // @phpstan-ignore cast.int (This is fine)
 
         return $this;
     }

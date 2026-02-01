@@ -34,16 +34,16 @@ class WideLoadServiceProvider extends ServiceProvider
     protected function registerMacros(): void
     {
         ContextRepository::macro('wideLoad', function (): WideLoad {
-            return app(WideLoad::class);
+            return Container::getInstance()->make(WideLoad::class);
         });
 
         ContextRepository::macro('addWide', function (string|array $key, mixed $value = null): WideLoad {
             /** @var string|array<string, mixed> $key */
-            return app(WideLoad::class)->add($key, $value);
+            return Container::getInstance()->make(WideLoad::class)->add($key, $value);
         });
 
         ContextRepository::macro('reportWide', function (): void {
-            app(WideLoad::class)->report();
+            Container::getInstance()->make(WideLoad::class)->report();
         });
     }
 
