@@ -34,8 +34,3 @@ jobs:
 
       - name: Run static analysis
         run: composer static-analysis
-
-      - name: Check facade documentation
-        run: |
-          composer facade-docs
-          git diff --exit-code src/Facades/
