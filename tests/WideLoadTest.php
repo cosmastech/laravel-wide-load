@@ -3,14 +3,13 @@
 namespace Cosmastech\LaravelWideLoad\Tests;
 
 use Cosmastech\LaravelWideLoad\WideLoad;
-use Override;
 use PHPUnit\Framework\Attributes\Test;
 
 class WideLoadTest extends TestCase
 {
     private WideLoad $wideLoad;
 
-    #[Override]
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -210,7 +209,7 @@ class WideLoadTest extends TestCase
     #[Test]
     public function disabled_report_doesNothing(): void
     {
-        $this->wideLoad->disable();
+        $this->wideLoad->enable(false);
         $this->wideLoad->add('key', 'value');
         $this->wideLoad->report();
 
@@ -226,7 +225,7 @@ class WideLoadTest extends TestCase
     #[Test]
     public function afterDisable_enabled_returnsFalse(): void
     {
-        $this->wideLoad->disable();
+        $this->wideLoad->enable(false);
 
         $this->assertFalse($this->wideLoad->enabled());
     }
@@ -234,8 +233,8 @@ class WideLoadTest extends TestCase
     #[Test]
     public function afterDisableAndEnable_enabled_returnsTrue(): void
     {
-        $this->wideLoad->disable();
-        $this->wideLoad->enable();
+        $this->wideLoad->enable(false);
+        $this->wideLoad->enable(true);
 
         $this->assertTrue($this->wideLoad->enabled());
     }

@@ -3,20 +3,26 @@
 namespace Cosmastech\LaravelWideLoad;
 
 use Closure;
+use Illuminate\Container\Attributes\Config;
+use Illuminate\Container\Attributes\Scoped;
+use Illuminate\Container\Attributes\Singleton;
 use Illuminate\Support\Facades\Log;
 
+#[Scoped]
 class WideLoad
 {
     public const CONTEXT_KEY = '__wide_load';
 
     /** @var array<string, mixed> */
-    private array $data = [];
+    protected array $data = [];
 
-    private ?Closure $reportCallback = null;
+    protected ?Closure $reportCallback = null;
 
     public function __construct(
-        private bool $enabled = true,
-        private string $logLevel = 'info',
+        #[Config('wide-load.enabled', true)]
+        protected bool $enabled = true,
+        #[Config('wide-load.log_level', 'info')]
+        protected string $logLevel = 'info',
     ) {
     }
 
@@ -157,6 +163,9 @@ class WideLoad
         Log::log($this->logLevel, 'Wide event.', $data);
     }
 
+    /**
+     * @param  callable(array<string, mixed>): void  $callback
+     */
     public function reportUsing(callable $callback): static
     {
         $this->reportCallback = $callback(...);
@@ -169,17 +178,11 @@ class WideLoad
         return $this->enabled;
     }
 
-    public function enable(): static
+    public function enable(bool $enabled = false): static
     {
-        $this->enabled = true;
+        $this->enabled = $enabled;
 
         return $this;
     }
 
-    public function disable(): static
-    {
-        $this->enabled = false;
-
-        return $this;
-    }
 }

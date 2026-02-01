@@ -2,6 +2,8 @@
 
 namespace Cosmastech\LaravelWideLoad;
 
+use Illuminate\Container\Container;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Events\Terminating;
 use Illuminate\Log\Context\Events\ContextDehydrating;
 use Illuminate\Log\Context\Events\ContextHydrated;
@@ -13,11 +15,13 @@ use Illuminate\Support\ServiceProvider;
 
 class WideLoadServiceProvider extends ServiceProvider
 {
+    #[\Override]
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/wide-load.php', 'wide-load');
+        $this->mergeConfigFrom(__DIR__.'/../config/wide-load.php', 'wide-load');
 
-        $this->app->singleton(WideLoad::class, function (\Illuminate\Contracts\Foundation\Application $app): WideLoad {
+        $this->app->scoped(WideLoad::class, function (Application $app): WideLoad {
+            $config = Container::getInstance()->make('config');
             /** @var \Illuminate\Config\Repository $config */
             $config = $app->make('config');
 
@@ -34,14 +38,14 @@ class WideLoadServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->publishes([
-            __DIR__ . '/../config/wide-load.php' => $this->app->configPath('wide-load.php'),
+            __DIR__.'/../config/wide-load.php' => $this->app->configPath('wide-load.php'),
         ], 'wide-load-config');
 
         $this->registerMacros();
         $this->registerEventListeners();
     }
 
-    private function registerMacros(): void
+    protected function registerMacros(): void
     {
         ContextRepository::macro('wideLoad', function (): WideLoad {
             return app(WideLoad::class);
@@ -57,7 +61,7 @@ class WideLoadServiceProvider extends ServiceProvider
         });
     }
 
-    private function registerEventListeners(): void
+    protected function registerEventListeners(): void
     {
         $reportAndFlush = function (): void {
             /** @var WideLoad $wideLoad */
@@ -70,18 +74,12 @@ class WideLoadServiceProvider extends ServiceProvider
         Event::listen(JobProcessed::class, $reportAndFlush);
         Event::listen(JobFailed::class, $reportAndFlush);
 
-        /** @var \Illuminate\Config\Repository $config */
-        $config = $this->app->make('config');
-
-        /** @var bool $serializable */
-        $serializable = $config->get('wide-load.serializable', true);
-
-        if ($serializable) {
+        if ($this->app->make('config')->boolean('wide-load.serializable', true)) { // @phpstan-ignore method.nonObject
             $this->registerSerializationListeners();
         }
     }
 
-    private function registerSerializationListeners(): void
+    protected function registerSerializationListeners(): void
     {
         Event::listen(ContextDehydrating::class, function (ContextDehydrating $event): void {
             /** @var WideLoad $wideLoad */
