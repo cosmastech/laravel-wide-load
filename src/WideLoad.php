@@ -177,7 +177,7 @@ class WideLoad
         return $this->enabled;
     }
 
-    public function enable(bool $enabled = false): static
+    public function enable(bool $enabled = true): static
     {
         $this->enabled = $enabled;
 

@@ -176,21 +176,20 @@ final class WideLoadTest extends TestCase
         $this->wideLoad->report();
 
         $this->assertTrue(
-            $this->logHandler->hasInfo(['message' => 'Wide event.', 'context' => ['user_id' => 42]])
+            $this->logHandler->hasInfo(['message' => 'Request completed.', 'context' => ['user_id' => 42]])
         );
     }
 
     #[Test]
     public function debugLogLevel_report_usesConfiguredLevel(): void
     {
-        /** @var WideLoad $wideLoad */
         $wideLoad = new WideLoad(true, 'debug');
 
         $wideLoad->add('key', 'value');
         $wideLoad->report();
 
         $this->assertTrue(
-            $this->logHandler->hasDebug(['message' => 'Wide event.', 'context' => ['key' => 'value']])
+            $this->logHandler->hasDebug(['message' => 'Request completed.', 'context' => ['key' => 'value']])
         );
     }
 
