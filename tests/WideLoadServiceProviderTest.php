@@ -3,6 +3,7 @@
 namespace Cosmastech\LaravelWideLoad\Tests;
 
 use Cosmastech\LaravelWideLoad\WideLoad;
+use Cosmastech\LaravelWideLoad\WideLoadServiceProvider;
 use Exception;
 use Illuminate\Contracts\Queue\Job;
 use Illuminate\Foundation\Events\Terminating;
@@ -13,9 +14,11 @@ use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Support\Facades\Context;
 use Illuminate\Support\Facades\Event;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 
-class WideLoadServiceProviderTest extends TestCase
+#[CoversClass(WideLoadServiceProvider::class)]
+final class WideLoadServiceProviderTest extends TestCase
 {
     #[Test]
     public function resolvedTwice_make_returnsSameInstance(): void
@@ -65,7 +68,7 @@ class WideLoadServiceProviderTest extends TestCase
         Context::reportWide();
 
         $this->assertTrue(
-            $this->logHandler->hasInfo(['message' => 'Wide event.', 'context' => ['key' => 'value']])
+            $this->logHandler->hasInfo(['message' => 'Request completed.', 'context' => ['key' => 'value']])
         );
     }
 
@@ -78,7 +81,7 @@ class WideLoadServiceProviderTest extends TestCase
         Event::dispatch(new Terminating());
 
         $this->assertTrue(
-            $this->logHandler->hasInfo(['message' => 'Wide event.', 'context' => ['request_id' => 'abc-123']])
+            $this->logHandler->hasInfo(['message' => 'Request completed.', 'context' => ['request_id' => 'abc-123']])
         );
         $this->assertSame([], $wideLoad->all());
     }
@@ -93,7 +96,7 @@ class WideLoadServiceProviderTest extends TestCase
         Event::dispatch(new JobProcessed('default', $job));
 
         $this->assertTrue(
-            $this->logHandler->hasInfo(['message' => 'Wide event.', 'context' => ['job' => 'SendEmail']])
+            $this->logHandler->hasInfo(['message' => 'Request completed.', 'context' => ['job' => 'SendEmail']])
         );
         $this->assertSame([], $wideLoad->all());
     }
@@ -108,7 +111,7 @@ class WideLoadServiceProviderTest extends TestCase
         Event::dispatch(new JobFailed('default', $job, new Exception('Test failure')));
 
         $this->assertTrue(
-            $this->logHandler->hasInfo(['message' => 'Wide event.', 'context' => ['job' => 'FailedJob']])
+            $this->logHandler->hasInfo(['message' => 'Request completed.', 'context' => ['job' => 'FailedJob']])
         );
         $this->assertSame([], $wideLoad->all());
     }

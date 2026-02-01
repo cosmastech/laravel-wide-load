@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 #[Scoped]
 class WideLoad
 {
-    public const CONTEXT_KEY = '__wide_load';
+    public const string CONTEXT_KEY = '__wide_load';
 
     /** @var array<string, mixed> */
     protected array $data = [];
@@ -159,7 +159,7 @@ class WideLoad
             return;
         }
 
-        Log::log($this->logLevel, 'Wide event.', $data);
+        Log::log($this->logLevel, 'Request completed.', $data);
     }
 
     /**

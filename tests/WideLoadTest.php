@@ -4,9 +4,11 @@ namespace Cosmastech\LaravelWideLoad\Tests;
 
 use Cosmastech\LaravelWideLoad\WideLoad;
 use Override;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 
-class WideLoadTest extends TestCase
+#[CoversClass(WideLoad::class)]
+final class WideLoadTest extends TestCase
 {
     private WideLoad $wideLoad;
 
