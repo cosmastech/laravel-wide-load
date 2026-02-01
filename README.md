@@ -46,7 +46,7 @@ Context::addWide(['plan' => 'pro', 'locale' => 'en']);
 Inject or resolve the `WideLoad` class directly for the full API:
 
 ```php
-use Cosmastech\LaravelWideLoad\WideLoad;
+use Cosmastech\WideLoad\WideLoad;
 
 $wideLoad = resolve(WideLoad::class);
 
@@ -80,7 +80,7 @@ No manual reporting is needed in most cases.
 By default, Wide Load writes to the Laravel log. To send data somewhere else (a metrics service, a dedicated wide event store, etc.), register a custom callback in your `AppServiceProvider`:
 
 ```php
-use Cosmastech\LaravelWideLoad\WideLoad;
+use Cosmastech\WideLoad\WideLoad;
 
 public function boot(): void
 {

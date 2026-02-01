@@ -1,6 +1,6 @@
 <?php
 
-namespace Cosmastech\LaravelWideLoad;
+namespace Cosmastech\WideLoad;
 
 use Illuminate\Container\Container;
 use Illuminate\Foundation\Events\Terminating;

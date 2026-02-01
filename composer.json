@@ -23,12 +23,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Cosmastech\\LaravelWideLoad\\": "src/"
+            "Cosmastech\\WideLoad\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Cosmastech\\LaravelWideLoad\\Tests\\": "tests/",
+            "Cosmastech\\WideLoad\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
@@ -42,10 +42,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Cosmastech\\LaravelWideLoad\\WideLoadServiceProvider"
+                "Cosmastech\\WideLoad\\WideLoadServiceProvider"
             ],
             "aliases": {
-                "WideLoad": "Cosmastech\\LaravelWideLoad\\Facades\\WideLoad"
+                "WideLoad": "Cosmastech\\WideLoad\\Facades\\WideLoad"
             }
         }
     },

@@ -1,9 +1,9 @@
 <?php
 
-namespace Cosmastech\LaravelWideLoad\Tests;
+namespace Cosmastech\WideLoad\Tests;
 
-use Cosmastech\LaravelWideLoad\WideLoad;
-use Cosmastech\LaravelWideLoad\WideLoadServiceProvider;
+use Cosmastech\WideLoad\WideLoad;
+use Cosmastech\WideLoad\WideLoadServiceProvider;
 use Exception;
 use Illuminate\Contracts\Queue\Job;
 use Illuminate\Foundation\Events\Terminating;

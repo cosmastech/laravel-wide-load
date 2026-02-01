@@ -1,5 +1,5 @@
 <?php
 
 return [
-    Cosmastech\LaravelWideLoad\WideLoadServiceProvider::class,
+    Cosmastech\WideLoad\WideLoadServiceProvider::class,
 ];

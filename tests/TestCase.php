@@ -1,6 +1,6 @@
 <?php
 
-namespace Cosmastech\LaravelWideLoad\Tests;
+namespace Cosmastech\WideLoad\Tests;
 
 use Monolog\Handler\TestHandler;
 use Orchestra\Testbench\Concerns\WithWorkbench;

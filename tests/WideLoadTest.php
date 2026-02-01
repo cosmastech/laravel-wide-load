@@ -1,8 +1,8 @@
 <?php
 
-namespace Cosmastech\LaravelWideLoad\Tests;
+namespace Cosmastech\WideLoad\Tests;
 
-use Cosmastech\LaravelWideLoad\WideLoad;
+use Cosmastech\WideLoad\WideLoad;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;

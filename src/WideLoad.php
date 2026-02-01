@@ -1,6 +1,6 @@
 <?php
 
-namespace Cosmastech\LaravelWideLoad;
+namespace Cosmastech\WideLoad;
 
 use Closure;
 use Illuminate\Container\Attributes\Config;
