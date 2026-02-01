@@ -5,7 +5,6 @@ namespace Cosmastech\LaravelWideLoad;
 use Closure;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Container\Attributes\Scoped;
-use Illuminate\Container\Attributes\Singleton;
 use Illuminate\Support\Facades\Log;
 
 #[Scoped]
@@ -184,5 +183,4 @@ class WideLoad
 
         return $this;
     }
-
 }

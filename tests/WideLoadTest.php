@@ -3,13 +3,14 @@
 namespace Cosmastech\LaravelWideLoad\Tests;
 
 use Cosmastech\LaravelWideLoad\WideLoad;
+use Override;
 use PHPUnit\Framework\Attributes\Test;
 
 class WideLoadTest extends TestCase
 {
     private WideLoad $wideLoad;
 
-    #[\Override]
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
