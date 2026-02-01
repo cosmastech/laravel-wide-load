@@ -17,7 +17,8 @@ class WideLoad
     public function __construct(
         private bool $enabled = true,
         private string $logLevel = 'info',
-    ) {}
+    ) {
+    }
 
     /**
      * @param  string|array<string, mixed>  $key

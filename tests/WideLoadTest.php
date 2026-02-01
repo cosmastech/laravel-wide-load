@@ -3,12 +3,14 @@
 namespace Cosmastech\LaravelWideLoad\Tests;
 
 use Cosmastech\LaravelWideLoad\WideLoad;
-use Illuminate\Support\Facades\Log;
+use Override;
+use PHPUnit\Framework\Attributes\Test;
 
 class WideLoadTest extends TestCase
 {
     private WideLoad $wideLoad;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -16,14 +18,16 @@ class WideLoadTest extends TestCase
         $this->wideLoad = $this->app->make(WideLoad::class);
     }
 
-    public function test_add_and_get(): void
+    #[Test]
+    public function singleValue_add_storesValue(): void
     {
         $this->wideLoad->add('user_id', 42);
 
         $this->assertSame(42, $this->wideLoad->get('user_id'));
     }
 
-    public function test_add_array(): void
+    #[Test]
+    public function arrayOfValues_add_storesAllValues(): void
     {
         $this->wideLoad->add(['user_id' => 42, 'role' => 'admin']);
 
@@ -31,12 +35,14 @@ class WideLoadTest extends TestCase
         $this->assertSame('admin', $this->wideLoad->get('role'));
     }
 
-    public function test_get_returns_default_when_missing(): void
+    #[Test]
+    public function missingKey_get_returnsDefault(): void
     {
         $this->assertSame('fallback', $this->wideLoad->get('missing', 'fallback'));
     }
 
-    public function test_add_if_does_not_overwrite(): void
+    #[Test]
+    public function keyAlreadyExists_addIf_doesNotOverwrite(): void
     {
         $this->wideLoad->add('key', 'first');
         $this->wideLoad->addIf('key', 'second');
@@ -44,44 +50,54 @@ class WideLoadTest extends TestCase
         $this->assertSame('first', $this->wideLoad->get('key'));
     }
 
-    public function test_add_if_adds_when_missing(): void
+    #[Test]
+    public function keyDoesNotExist_addIf_addsValue(): void
     {
         $this->wideLoad->addIf('key', 'value');
 
         $this->assertSame('value', $this->wideLoad->get('key'));
     }
 
-    public function test_has(): void
+    #[Test]
+    public function keyMissing_has_returnsFalse(): void
     {
         $this->assertFalse($this->wideLoad->has('key'));
+    }
 
+    #[Test]
+    public function keyPresent_has_returnsTrue(): void
+    {
         $this->wideLoad->add('key', 'value');
 
         $this->assertTrue($this->wideLoad->has('key'));
     }
 
-    public function test_all(): void
+    #[Test]
+    public function multipleValuesAdded_all_returnsEntireArray(): void
     {
         $this->wideLoad->add(['a' => 1, 'b' => 2]);
 
         $this->assertSame(['a' => 1, 'b' => 2], $this->wideLoad->all());
     }
 
-    public function test_only(): void
+    #[Test]
+    public function subsetOfKeys_only_returnsMatchingKeys(): void
     {
         $this->wideLoad->add(['a' => 1, 'b' => 2, 'c' => 3]);
 
         $this->assertSame(['a' => 1, 'c' => 3], $this->wideLoad->only(['a', 'c']));
     }
 
-    public function test_except(): void
+    #[Test]
+    public function subsetOfKeys_except_returnsRemainingKeys(): void
     {
         $this->wideLoad->add(['a' => 1, 'b' => 2, 'c' => 3]);
 
         $this->assertSame(['a' => 1, 'c' => 3], $this->wideLoad->except(['b']));
     }
 
-    public function test_forget_single_key(): void
+    #[Test]
+    public function singleKey_forget_removesOnlyThatKey(): void
     {
         $this->wideLoad->add(['a' => 1, 'b' => 2]);
         $this->wideLoad->forget('a');
@@ -90,7 +106,8 @@ class WideLoadTest extends TestCase
         $this->assertTrue($this->wideLoad->has('b'));
     }
 
-    public function test_forget_multiple_keys(): void
+    #[Test]
+    public function multipleKeys_forget_removesAllSpecifiedKeys(): void
     {
         $this->wideLoad->add(['a' => 1, 'b' => 2, 'c' => 3]);
         $this->wideLoad->forget(['a', 'c']);
@@ -98,7 +115,8 @@ class WideLoadTest extends TestCase
         $this->assertSame(['b' => 2], $this->wideLoad->all());
     }
 
-    public function test_pull(): void
+    #[Test]
+    public function existingKey_pull_returnsValueAndRemovesIt(): void
     {
         $this->wideLoad->add('key', 'value');
 
@@ -106,12 +124,14 @@ class WideLoadTest extends TestCase
         $this->assertFalse($this->wideLoad->has('key'));
     }
 
-    public function test_pull_returns_default_when_missing(): void
+    #[Test]
+    public function missingKey_pull_returnsDefault(): void
     {
         $this->assertSame('default', $this->wideLoad->pull('missing', 'default'));
     }
 
-    public function test_flush(): void
+    #[Test]
+    public function dataPresent_flush_removesAllData(): void
     {
         $this->wideLoad->add(['a' => 1, 'b' => 2]);
         $this->wideLoad->flush();
@@ -119,7 +139,8 @@ class WideLoadTest extends TestCase
         $this->assertSame([], $this->wideLoad->all());
     }
 
-    public function test_push(): void
+    #[Test]
+    public function multipleValues_push_appendsToArray(): void
     {
         $this->wideLoad->push('tags', 'first');
         $this->wideLoad->push('tags', 'second', 'third');
@@ -127,7 +148,8 @@ class WideLoadTest extends TestCase
         $this->assertSame(['first', 'second', 'third'], $this->wideLoad->get('tags'));
     }
 
-    public function test_increment(): void
+    #[Test]
+    public function multipleCalls_increment_sumsCorrectly(): void
     {
         $this->wideLoad->increment('count');
         $this->wideLoad->increment('count');
@@ -136,7 +158,8 @@ class WideLoadTest extends TestCase
         $this->assertSame(5, $this->wideLoad->get('count'));
     }
 
-    public function test_decrement(): void
+    #[Test]
+    public function afterIncrement_decrement_subtractsCorrectly(): void
     {
         $this->wideLoad->increment('count', 10);
         $this->wideLoad->decrement('count', 3);
@@ -144,36 +167,33 @@ class WideLoadTest extends TestCase
         $this->assertSame(7, $this->wideLoad->get('count'));
     }
 
-    public function test_report_logs_wide_event(): void
+    #[Test]
+    public function dataPresent_report_logsWideEvent(): void
     {
-        Log::spy();
-
         $this->wideLoad->add('user_id', 42);
         $this->wideLoad->report();
 
-        Log::shouldHaveReceived('log')
-            ->once()
-            ->with('info', 'Wide event.', ['user_id' => 42]);
+        $this->assertTrue(
+            $this->logHandler->hasInfo(['message' => 'Wide event.', 'context' => ['user_id' => 42]])
+        );
     }
 
-    public function test_report_uses_configured_log_level(): void
+    #[Test]
+    public function debugLogLevel_report_usesConfiguredLevel(): void
     {
-        Log::spy();
-
-        $this->app['config']->set('wide-load.log_level', 'debug');
-
         /** @var WideLoad $wideLoad */
         $wideLoad = new WideLoad(true, 'debug');
 
         $wideLoad->add('key', 'value');
         $wideLoad->report();
 
-        Log::shouldHaveReceived('log')
-            ->once()
-            ->with('debug', 'Wide event.', ['key' => 'value']);
+        $this->assertTrue(
+            $this->logHandler->hasDebug(['message' => 'Wide event.', 'context' => ['key' => 'value']])
+        );
     }
 
-    public function test_report_using_custom_callback(): void
+    #[Test]
+    public function customCallbackSet_report_usesCallback(): void
     {
         $reported = [];
 
@@ -187,29 +207,41 @@ class WideLoadTest extends TestCase
         $this->assertSame(['key' => 'value'], $reported);
     }
 
-    public function test_report_does_nothing_when_disabled(): void
+    #[Test]
+    public function disabled_report_doesNothing(): void
     {
-        Log::spy();
-
         $this->wideLoad->disable();
         $this->wideLoad->add('key', 'value');
         $this->wideLoad->report();
 
-        Log::shouldNotHaveReceived('log');
+        $this->assertFalse($this->logHandler->hasInfoRecords());
     }
 
-    public function test_enable_and_disable(): void
+    #[Test]
+    public function defaultState_enabled_returnsTrue(): void
     {
         $this->assertTrue($this->wideLoad->enabled());
+    }
 
+    #[Test]
+    public function afterDisable_enabled_returnsFalse(): void
+    {
         $this->wideLoad->disable();
-        $this->assertFalse($this->wideLoad->enabled());
 
+        $this->assertFalse($this->wideLoad->enabled());
+    }
+
+    #[Test]
+    public function afterDisableAndEnable_enabled_returnsTrue(): void
+    {
+        $this->wideLoad->disable();
         $this->wideLoad->enable();
+
         $this->assertTrue($this->wideLoad->enabled());
     }
 
-    public function test_fluent_api(): void
+    #[Test]
+    public function chainedCalls_fluentApi_returnsWideLoadInstance(): void
     {
         $result = $this->wideLoad
             ->add('a', 1)

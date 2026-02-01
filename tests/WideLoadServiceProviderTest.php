@@ -3,6 +3,7 @@
 namespace Cosmastech\LaravelWideLoad\Tests;
 
 use Cosmastech\LaravelWideLoad\WideLoad;
+use Exception;
 use Illuminate\Contracts\Queue\Job;
 use Illuminate\Foundation\Events\Terminating;
 use Illuminate\Log\Context\Events\ContextDehydrating;
@@ -12,11 +13,12 @@ use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Support\Facades\Context;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Log;
+use PHPUnit\Framework\Attributes\Test;
 
 class WideLoadServiceProviderTest extends TestCase
 {
-    public function test_wide_load_is_registered_as_singleton(): void
+    #[Test]
+    public function resolvedTwice_make_returnsSameInstance(): void
     {
         $first = $this->app->make(WideLoad::class);
         $second = $this->app->make(WideLoad::class);
@@ -24,13 +26,15 @@ class WideLoadServiceProviderTest extends TestCase
         $this->assertSame($first, $second);
     }
 
-    public function test_config_is_merged(): void
+    #[Test]
+    public function defaultConfig_mergeConfig_hasExpectedDefaults(): void
     {
         $this->assertTrue($this->app['config']->get('wide-load.enabled'));
         $this->assertSame('info', $this->app['config']->get('wide-load.log_level'));
     }
 
-    public function test_wide_load_macro_is_registered(): void
+    #[Test]
+    public function booted_wideLoadMacro_returnsWideLoadInstance(): void
     {
         $this->assertTrue(ContextRepository::hasMacro('wideLoad'));
 
@@ -39,7 +43,8 @@ class WideLoadServiceProviderTest extends TestCase
         $this->assertInstanceOf(WideLoad::class, $result);
     }
 
-    public function test_add_wide_macro_is_registered(): void
+    #[Test]
+    public function booted_addWideMacro_delegatesToWideLoad(): void
     {
         $this->assertTrue(ContextRepository::hasMacro('addWide'));
 
@@ -49,96 +54,88 @@ class WideLoadServiceProviderTest extends TestCase
         $this->assertSame('macro_value', $wideLoad->get('macro_key'));
     }
 
-    public function test_report_wide_macro_is_registered(): void
+    #[Test]
+    public function booted_reportWideMacro_triggersReport(): void
     {
         $this->assertTrue(ContextRepository::hasMacro('reportWide'));
-
-        Log::spy();
 
         $wideLoad = $this->app->make(WideLoad::class);
         $wideLoad->add('key', 'value');
 
         Context::reportWide();
 
-        Log::shouldHaveReceived('log')
-            ->once()
-            ->with('info', 'Wide event.', ['key' => 'value']);
+        $this->assertTrue(
+            $this->logHandler->hasInfo(['message' => 'Wide event.', 'context' => ['key' => 'value']])
+        );
     }
 
-    public function test_terminating_event_triggers_report_and_flush(): void
+    #[Test]
+    public function dataPresent_terminatingEvent_reportsAndFlushes(): void
     {
-        Log::spy();
-
         $wideLoad = $this->app->make(WideLoad::class);
         $wideLoad->add('request_id', 'abc-123');
 
-        Event::dispatch(new Terminating);
+        Event::dispatch(new Terminating());
 
-        Log::shouldHaveReceived('log')
-            ->once()
-            ->with('info', 'Wide event.', ['request_id' => 'abc-123']);
-
+        $this->assertTrue(
+            $this->logHandler->hasInfo(['message' => 'Wide event.', 'context' => ['request_id' => 'abc-123']])
+        );
         $this->assertSame([], $wideLoad->all());
     }
 
-    public function test_job_processed_event_triggers_report_and_flush(): void
+    #[Test]
+    public function dataPresent_jobProcessedEvent_reportsAndFlushes(): void
     {
-        Log::spy();
-
         $wideLoad = $this->app->make(WideLoad::class);
         $wideLoad->add('job', 'SendEmail');
 
         $job = $this->createMock(Job::class);
         Event::dispatch(new JobProcessed('default', $job));
 
-        Log::shouldHaveReceived('log')
-            ->once()
-            ->with('info', 'Wide event.', ['job' => 'SendEmail']);
-
+        $this->assertTrue(
+            $this->logHandler->hasInfo(['message' => 'Wide event.', 'context' => ['job' => 'SendEmail']])
+        );
         $this->assertSame([], $wideLoad->all());
     }
 
-    public function test_job_failed_event_triggers_report_and_flush(): void
+    #[Test]
+    public function dataPresent_jobFailedEvent_reportsAndFlushes(): void
     {
-        Log::spy();
-
         $wideLoad = $this->app->make(WideLoad::class);
         $wideLoad->add('job', 'FailedJob');
 
         $job = $this->createMock(Job::class);
-        Event::dispatch(new JobFailed('default', $job, new \Exception('Test failure')));
+        Event::dispatch(new JobFailed('default', $job, new Exception('Test failure')));
 
-        Log::shouldHaveReceived('log')
-            ->once()
-            ->with('info', 'Wide event.', ['job' => 'FailedJob']);
-
+        $this->assertTrue(
+            $this->logHandler->hasInfo(['message' => 'Wide event.', 'context' => ['job' => 'FailedJob']])
+        );
         $this->assertSame([], $wideLoad->all());
     }
 
-    public function test_disabled_via_config(): void
+    #[Test]
+    public function disabledViaConfig_terminatingEvent_doesNotLog(): void
     {
         $this->app['config']->set('wide-load.enabled', false);
-
-        // Re-create the singleton with updated config
         $this->app->forgetInstance(WideLoad::class);
-
-        Log::spy();
 
         /** @var WideLoad $wideLoad */
         $wideLoad = $this->app->make(WideLoad::class);
         $wideLoad->add('key', 'value');
 
-        Event::dispatch(new Terminating);
+        Event::dispatch(new Terminating());
 
-        Log::shouldNotHaveReceived('log');
+        $this->assertFalse($this->logHandler->hasInfoRecords());
     }
 
-    public function test_serializable_is_true_by_default(): void
+    #[Test]
+    public function defaultConfig_serializable_isTrue(): void
     {
         $this->assertTrue($this->app['config']->get('wide-load.serializable'));
     }
 
-    public function test_dehydrating_pushes_data_to_hidden_context_when_serializable(): void
+    #[Test]
+    public function dataPresent_dehydrating_pushesToHiddenContext(): void
     {
         /** @var WideLoad $wideLoad */
         $wideLoad = $this->app->make(WideLoad::class);
@@ -152,7 +149,8 @@ class WideLoadServiceProviderTest extends TestCase
         $this->assertSame(['key' => 'value'], $context->getHidden(WideLoad::CONTEXT_KEY));
     }
 
-    public function test_hydrated_restores_data_from_hidden_context_when_serializable(): void
+    #[Test]
+    public function hiddenDataPresent_hydrated_restoresDataToWideLoad(): void
     {
         /** @var ContextRepository $context */
         $context = $this->app->make(ContextRepository::class);
@@ -164,11 +162,11 @@ class WideLoadServiceProviderTest extends TestCase
         $wideLoad = $this->app->make(WideLoad::class);
         $this->assertSame('value', $wideLoad->get('key'));
 
-        // Hidden key should be cleaned up
         $this->assertNull($context->getHidden(WideLoad::CONTEXT_KEY));
     }
 
-    public function test_dehydrating_does_not_push_empty_data(): void
+    #[Test]
+    public function noData_dehydrating_doesNotSetHiddenContext(): void
     {
         /** @var ContextRepository $context */
         $context = $this->app->make(ContextRepository::class);

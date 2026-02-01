@@ -15,7 +15,7 @@ class WideLoadServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/wide-load.php', 'wide-load');
+        $this->mergeConfigFrom(__DIR__ . '/../config/wide-load.php', 'wide-load');
 
         $this->app->singleton(WideLoad::class, function (\Illuminate\Contracts\Foundation\Application $app): WideLoad {
             /** @var \Illuminate\Config\Repository $config */
@@ -34,7 +34,7 @@ class WideLoadServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->publishes([
-            __DIR__.'/../config/wide-load.php' => $this->app->configPath('wide-load.php'),
+            __DIR__ . '/../config/wide-load.php' => $this->app->configPath('wide-load.php'),
         ], 'wide-load-config');
 
         $this->registerMacros();

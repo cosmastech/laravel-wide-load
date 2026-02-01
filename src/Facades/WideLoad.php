@@ -2,8 +2,8 @@
 
 namespace Cosmastech\LaravelWideLoad\Facades;
 
-use Illuminate\Support\Facades\Facade;
 use Cosmastech\LaravelWideLoad\WideLoad as ClassWideLoad;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static \Cosmastech\LaravelWideLoad\WideLoad add(string|array $key, mixed $value = null)
@@ -25,7 +25,7 @@ use Cosmastech\LaravelWideLoad\WideLoad as ClassWideLoad;
  * @method static \Cosmastech\LaravelWideLoad\WideLoad enable()
  * @method static \Cosmastech\LaravelWideLoad\WideLoad disable()
  *
- * @see \Cosmastech\LaravelWideLoad\WideLoad
+ * @see ClassWideLoad
  */
 class WideLoad extends Facade
 {
