@@ -15,6 +15,9 @@ class WideLoad
     /** @var array<string, mixed> */
     protected array $data = [];
 
+    /**
+     * @var (Closure(array<string, mixed>): void)|null
+     */
     protected ?Closure $reportCallback = null;
 
     public function __construct(
@@ -163,11 +166,12 @@ class WideLoad
     }
 
     /**
-     * @param  callable(array<string, mixed>): void  $callback
+     * @param  (Closure(array<string, mixed>): void)|null  $callback
+     * @return $this
      */
-    public function reportUsing(callable $callback): static
+    public function reportUsing(?Closure $callback): static
     {
-        $this->reportCallback = $callback(...);
+        $this->reportCallback = $callback;
 
         return $this;
     }
