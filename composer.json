@@ -1,0 +1,62 @@
+{
+    "name": "cosmastech/laravel-wide-load",
+    "description": "Wide event logging for Laravel — one log to rule them all.",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "logging",
+        "wide-event",
+        "canonical-log-line"
+    ],
+    "require": {
+        "php": "^8.2",
+        "illuminate/contracts": "^12.0",
+        "illuminate/log": "^12.0",
+        "illuminate/support": "^12.0"
+    },
+    "require-dev": {
+        "laravel/facade-documenter": "dev-main",
+        "laravel/pint": "^1.0",
+        "orchestra/testbench": "^10.0",
+        "phpstan/phpstan": "^2.0",
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Cosmastech\\LaravelWideLoad\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Cosmastech\\LaravelWideLoad\\Tests\\": "tests/",
+            "Workbench\\App\\": "workbench/app/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "lint": "pint",
+        "lint-check": "pint --test",
+        "static-analysis": "phpstan analyse",
+        "facade-docs": "@php vendor/bin/facade.php Cosmastech\\\\LaravelWideLoad\\\\Facades\\\\WideLoad"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Cosmastech\\LaravelWideLoad\\WideLoadServiceProvider"
+            ],
+            "aliases": {
+                "WideLoad": "Cosmastech\\LaravelWideLoad\\Facades\\WideLoad"
+            }
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "repositories": [{
+        "name": "facade-documenter",
+        "type": "vcs",
+        "url": "https://github.com/laravel/facade-documenter.git"
+    }]
+}

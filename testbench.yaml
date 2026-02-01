@@ -1,0 +1,2 @@
+providers:
+  - Cosmastech\LaravelWideLoad\WideLoadServiceProvider

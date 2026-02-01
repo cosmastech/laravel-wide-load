@@ -1,0 +1,184 @@
+<?php
+
+namespace Cosmastech\LaravelWideLoad;
+
+use Closure;
+use Illuminate\Support\Facades\Log;
+
+class WideLoad
+{
+    public const CONTEXT_KEY = '__wide_load';
+
+    /** @var array<string, mixed> */
+    private array $data = [];
+
+    private ?Closure $reportCallback = null;
+
+    public function __construct(
+        private bool $enabled = true,
+        private string $logLevel = 'info',
+    ) {}
+
+    /**
+     * @param  string|array<string, mixed>  $key
+     */
+    public function add(string|array $key, mixed $value = null): static
+    {
+        if (is_array($key)) {
+            foreach ($key as $k => $v) {
+                $this->data[$k] = $v;
+            }
+        } else {
+            $this->data[$key] = $value;
+        }
+
+        return $this;
+    }
+
+    public function addIf(string $key, mixed $value): static
+    {
+        if (! $this->has($key)) {
+            $this->data[$key] = $value;
+        }
+
+        return $this;
+    }
+
+    public function get(string $key, mixed $default = null): mixed
+    {
+        return $this->data[$key] ?? $default;
+    }
+
+    public function pull(string $key, mixed $default = null): mixed
+    {
+        $value = $this->get($key, $default);
+
+        $this->forget($key);
+
+        return $value;
+    }
+
+    public function has(string $key): bool
+    {
+        return array_key_exists($key, $this->data);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function all(): array
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param  array<int, string>  $keys
+     * @return array<string, mixed>
+     */
+    public function only(array $keys): array
+    {
+        return array_intersect_key($this->data, array_flip($keys));
+    }
+
+    /**
+     * @param  array<int, string>  $keys
+     * @return array<string, mixed>
+     */
+    public function except(array $keys): array
+    {
+        return array_diff_key($this->data, array_flip($keys));
+    }
+
+    /**
+     * @param  string|array<int, string>  $key
+     */
+    public function forget(string|array $key): static
+    {
+        $keys = is_array($key) ? $key : [$key];
+
+        foreach ($keys as $k) {
+            unset($this->data[$k]);
+        }
+
+        return $this;
+    }
+
+    public function flush(): static
+    {
+        $this->data = [];
+
+        return $this;
+    }
+
+    public function push(string $key, mixed ...$values): static
+    {
+        $current = $this->get($key, []);
+        $existing = is_array($current) ? $current : [$current];
+
+        foreach ($values as $value) {
+            $existing[] = $value;
+        }
+
+        $this->data[$key] = $existing;
+
+        return $this;
+    }
+
+    public function increment(string $key, int $amount = 1): static
+    {
+        /** @var int $current */
+        $current = $this->get($key, 0);
+
+        $this->data[$key] = $current + $amount;
+
+        return $this;
+    }
+
+    public function decrement(string $key, int $amount = 1): static
+    {
+        return $this->increment($key, -$amount);
+    }
+
+    public function report(): void
+    {
+        if (! $this->enabled) {
+            return;
+        }
+
+        $data = $this->all();
+
+        if ($this->reportCallback !== null) {
+            ($this->reportCallback)($data);
+
+            return;
+        }
+
+        Log::log($this->logLevel, 'Wide event.', $data);
+    }
+
+    public function reportUsing(callable $callback): static
+    {
+        $this->reportCallback = $callback(...);
+
+        return $this;
+    }
+
+    public function enabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    public function enable(): static
+    {
+        $this->enabled = true;
+
+        return $this;
+    }
+
+    public function disable(): static
+    {
+        $this->enabled = false;
+
+        return $this;
+    }
+}
