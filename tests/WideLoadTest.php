@@ -143,15 +143,6 @@ final class WideLoadTest extends TestCase
     }
 
     #[Test]
-    public function multipleValues_push_appendsToArray(): void
-    {
-        $this->wideLoad->push('tags', 'first');
-        $this->wideLoad->push('tags', 'second', 'third');
-
-        $this->assertSame(['first', 'second', 'third'], $this->wideLoad->get('tags'));
-    }
-
-    #[Test]
     public function multipleCalls_increment_sumsCorrectly(): void
     {
         $this->wideLoad->increment('count');
@@ -228,14 +219,12 @@ final class WideLoadTest extends TestCase
         $result = $this->wideLoad
             ->add('a', 1)
             ->addIf('b', 2)
-            ->push('tags', 'x')
             ->increment('count');
 
         $this->assertInstanceOf(WideLoad::class, $result);
         $this->assertSame([
             'a' => 1,
             'b' => 2,
-            'tags' => ['x'],
             'count' => 1,
         ], $this->wideLoad->all());
     }

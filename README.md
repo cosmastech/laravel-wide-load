@@ -58,9 +58,6 @@ $wideLoad->add(['plan' => 'pro', 'locale' => 'en']);
 // Add only if the key doesn't exist yet
 $wideLoad->addIf('request_id', Str::uuid());
 
-// Append to an array
-$wideLoad->push('tags', 'slow-query');
-
 // Increment a counter
 $wideLoad->increment('db_queries');
 $wideLoad->decrement('remaining_credits');

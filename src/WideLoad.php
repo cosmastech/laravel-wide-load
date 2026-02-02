@@ -115,20 +115,6 @@ class WideLoad
         return $this;
     }
 
-    public function push(string $key, mixed ...$values): static
-    {
-        $current = $this->get($key, []);
-        $existing = is_array($current) ? $current : [$current];
-
-        foreach ($values as $value) {
-            $existing[] = $value;
-        }
-
-        $this->data[$key] = $existing;
-
-        return $this;
-    }
-
     public function increment(string $key, int $amount = 1): static
     {
         $this->data[$key] = ((int) $this->get($key, 0)) + $amount; // @phpstan-ignore cast.int (This is fine)
