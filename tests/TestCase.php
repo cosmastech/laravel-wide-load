@@ -5,6 +5,7 @@ namespace Cosmastech\WideLoad\Tests;
 use Monolog\Handler\TestHandler;
 use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as BaseTestCase;
+use Override;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -12,6 +13,7 @@ abstract class TestCase extends BaseTestCase
 
     protected TestHandler $logHandler;
 
+    #[Override]
     protected function defineEnvironment($app): void
     {
         $app['config']->set('logging.default', 'test');
@@ -21,6 +23,7 @@ abstract class TestCase extends BaseTestCase
         ]);
     }
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

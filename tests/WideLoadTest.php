@@ -3,6 +3,7 @@
 namespace Cosmastech\WideLoad\Tests;
 
 use Cosmastech\WideLoad\WideLoad;
+use Cosmastech\WideLoad\WideLoadConfig;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -183,7 +184,7 @@ final class WideLoadTest extends TestCase
     #[Test]
     public function debugLogLevel_report_usesConfiguredLevel(): void
     {
-        $wideLoad = new WideLoad(true, 'debug');
+        $wideLoad = new WideLoad(new WideLoadConfig(enabled: true, logLevel: 'debug'));
 
         $wideLoad->add('key', 'value');
         $wideLoad->report();

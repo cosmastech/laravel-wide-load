@@ -3,7 +3,6 @@
 namespace Cosmastech\WideLoad;
 
 use Closure;
-use Illuminate\Container\Attributes\Config;
 use Illuminate\Container\Attributes\Scoped;
 use Illuminate\Support\Facades\Log;
 
@@ -21,10 +20,7 @@ class WideLoad
     protected ?Closure $reportCallback = null;
 
     public function __construct(
-        #[Config('wide-load.enabled', true)]
-        protected bool $enabled = true,
-        #[Config('wide-load.log_level', 'info')]
-        protected string $logLevel = 'info',
+        protected readonly WideLoadConfig $config,
     ) {
     }
 
@@ -147,7 +143,7 @@ class WideLoad
 
     public function report(): void
     {
-        if (! $this->enabled) {
+        if (! $this->config->enabled) {
             return;
         }
 
@@ -159,7 +155,7 @@ class WideLoad
             return;
         }
 
-        Log::log($this->logLevel, 'Request completed.', $data);
+        Log::log($this->config->logLevel, 'Request completed.', $data);
     }
 
     /**
@@ -175,12 +171,12 @@ class WideLoad
 
     public function enabled(): bool
     {
-        return $this->enabled;
+        return $this->config->enabled;
     }
 
     public function enable(bool $enabled = true): static
     {
-        $this->enabled = $enabled;
+        $this->config->enabled = $enabled;
 
         return $this;
     }
