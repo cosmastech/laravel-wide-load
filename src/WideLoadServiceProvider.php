@@ -24,9 +24,11 @@ class WideLoadServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->publishes([
-            __DIR__ . '/../config/wide-load.php' => $this->app->configPath('wide-load.php'),
-        ], 'wide-load-config');
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__ . '/../config/wide-load.php' => $this->app->configPath('wide-load.php'),
+            ], 'wide-load-config');
+        }
 
         $this->registerMacros();
         $this->registerEventListeners();
@@ -57,10 +59,7 @@ class WideLoadServiceProvider extends ServiceProvider
                 return;
             }
 
-            /** @var WideLoad $wideLoad */
-            $wideLoad = $container->make(WideLoad::class);
-            $wideLoad->report();
-            $wideLoad->flush();
+            $container->make(WideLoad::class)->report()->flush();
         };
 
         Event::listen(Terminating::class, $reportAndFlush);

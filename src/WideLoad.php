@@ -141,17 +141,22 @@ class WideLoad
         return $this->increment($key, -$amount);
     }
 
-    public function report(): void
+    /**
+     * @return $this
+     */
+    public function report(): static
     {
         $data = $this->all();
 
         if ($this->reportCallback !== null) {
             ($this->reportCallback)($data);
 
-            return;
+            return $this;
         }
 
         Log::log($this->config->logLevel, $this->config->logMessage, $data);
+
+        return $this;
     }
 
     /**
