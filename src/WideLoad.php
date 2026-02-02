@@ -146,7 +146,7 @@ class WideLoad
         Event::dispatch(new WideLoadReported($data));
 
         if ($this->reportCallback !== null) {
-            ($this->reportCallback)($data);
+            call_user_func($this->reportCallback, $data);
 
             return $this;
         }
