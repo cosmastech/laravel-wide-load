@@ -2,6 +2,11 @@
 
 namespace Cosmastech\WideLoad\Events;
 
+/**
+ * Dispatched when WideLoad is reporting data.
+ *
+ * The $data property contains the collected key-value pairs at the time of reporting.
+ */
 class WideLoadReported
 {
     /**
