@@ -151,7 +151,7 @@ class WideLoad
             return;
         }
 
-        Log::log($this->config->logLevel, 'Request completed.', $data);
+        Log::log($this->config->logLevel, $this->config->logMessage, $data);
     }
 
     /**

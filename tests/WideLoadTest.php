@@ -195,6 +195,19 @@ final class WideLoadTest extends TestCase
     }
 
     #[Test]
+    public function customLogMessage_report_usesConfiguredMessage(): void
+    {
+        $wideLoad = new WideLoad(new WideLoadConfig(logMessage: 'Lifecycle finished.'));
+
+        $wideLoad->add('key', 'value');
+        $wideLoad->report();
+
+        $this->assertTrue(
+            $this->logHandler->hasInfo(['message' => 'Lifecycle finished.', 'context' => ['key' => 'value']])
+        );
+    }
+
+    #[Test]
     public function customCallbackSet_report_usesCallback(): void
     {
         $reported = [];

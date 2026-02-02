@@ -11,6 +11,8 @@ class WideLoadConfig
     public function __construct(
         #[Config('wide-load.log_level', 'info')]
         public string $logLevel = 'info',
+        #[Config('wide-load.log_message', 'Request completed.')]
+        public string $logMessage = 'Request completed.',
     ) {
     }
 }

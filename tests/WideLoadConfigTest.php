@@ -36,4 +36,23 @@ final class WideLoadConfigTest extends TestCase
 
         $this->assertSame('debug', $config->logLevel);
     }
+
+    #[Test]
+    public function defaultConfig_logMessage_isRequestCompleted(): void
+    {
+        $config = $this->app->make(WideLoadConfig::class);
+
+        $this->assertSame('Request completed.', $config->logMessage);
+    }
+
+    #[Test]
+    public function customConfig_logMessage_readsFromConfig(): void
+    {
+        $this->app['config']->set('wide-load.log_message', 'Done.');
+        $this->app->forgetScopedInstances();
+
+        $config = $this->app->make(WideLoadConfig::class);
+
+        $this->assertSame('Done.', $config->logMessage);
+    }
 }
