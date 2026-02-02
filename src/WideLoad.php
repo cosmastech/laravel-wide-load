@@ -3,7 +3,10 @@
 namespace Cosmastech\WideLoad;
 
 use Closure;
+use Cosmastech\WideLoad\Events\NoWideLoadToReport;
+use Cosmastech\WideLoad\Events\WideLoadReported;
 use Illuminate\Container\Attributes\Scoped;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 
 #[Scoped]
@@ -135,8 +138,12 @@ class WideLoad
         $data = $this->all();
 
         if ($data === []) {
+            Event::dispatch(new NoWideLoadToReport());
+
             return $this;
         }
+
+        Event::dispatch(new WideLoadReported($data));
 
         if ($this->reportCallback !== null) {
             ($this->reportCallback)($data);

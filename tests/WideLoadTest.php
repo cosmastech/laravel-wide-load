@@ -2,8 +2,11 @@
 
 namespace Cosmastech\WideLoad\Tests;
 
+use Cosmastech\WideLoad\Events\NoWideLoadToReport;
+use Cosmastech\WideLoad\Events\WideLoadReported;
 use Cosmastech\WideLoad\WideLoad;
 use Cosmastech\WideLoad\WideLoadConfig;
+use Illuminate\Support\Facades\Event;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -167,6 +170,31 @@ final class WideLoadTest extends TestCase
         $this->wideLoad->report();
 
         $this->assertFalse($this->logHandler->hasInfoRecords());
+    }
+
+    #[Test]
+    public function emptyData_report_dispatchesNoWideLoadToReport(): void
+    {
+        Event::fake([NoWideLoadToReport::class, WideLoadReported::class]);
+
+        $this->wideLoad->report();
+
+        Event::assertDispatched(NoWideLoadToReport::class);
+        Event::assertNotDispatched(WideLoadReported::class);
+    }
+
+    #[Test]
+    public function dataPresent_report_dispatchesEvent(): void
+    {
+        Event::fake([WideLoadReported::class, NoWideLoadToReport::class]);
+
+        $this->wideLoad->add('key', 'value');
+        $this->wideLoad->report();
+
+        Event::assertDispatched(WideLoadReported::class, function (WideLoadReported $event) {
+            return $event->data === ['key' => 'value'];
+        });
+        Event::assertNotDispatched(NoWideLoadToReport::class);
     }
 
     #[Test]
