@@ -176,6 +176,6 @@ final class WideLoadServiceProviderTest extends TestCase
 
         Event::dispatch(new ContextDehydrating($context));
 
-        $this->assertNull($context->getHidden(WideLoad::CONTEXT_KEY));
+        $this->assertSame(-1, $context->getHidden(WideLoad::CONTEXT_KEY, -1));
     }
 }
