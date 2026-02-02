@@ -184,7 +184,7 @@ final class WideLoadTest extends TestCase
     #[Test]
     public function debugLogLevel_report_usesConfiguredLevel(): void
     {
-        $wideLoad = new WideLoad(new WideLoadConfig(enabled: true, logLevel: 'debug'));
+        $wideLoad = new WideLoad(new WideLoadConfig(logLevel: 'debug'));
 
         $wideLoad->add('key', 'value');
         $wideLoad->report();
@@ -207,39 +207,6 @@ final class WideLoadTest extends TestCase
         $this->wideLoad->report();
 
         $this->assertSame(['key' => 'value'], $reported);
-    }
-
-    #[Test]
-    public function disabled_report_doesNothing(): void
-    {
-        $this->wideLoad->enable(false);
-        $this->wideLoad->add('key', 'value');
-        $this->wideLoad->report();
-
-        $this->assertFalse($this->logHandler->hasInfoRecords());
-    }
-
-    #[Test]
-    public function defaultState_enabled_returnsTrue(): void
-    {
-        $this->assertTrue($this->wideLoad->enabled());
-    }
-
-    #[Test]
-    public function afterDisable_enabled_returnsFalse(): void
-    {
-        $this->wideLoad->enable(false);
-
-        $this->assertFalse($this->wideLoad->enabled());
-    }
-
-    #[Test]
-    public function afterDisableAndEnable_enabled_returnsTrue(): void
-    {
-        $this->wideLoad->enable(false);
-        $this->wideLoad->enable(true);
-
-        $this->assertTrue($this->wideLoad->enabled());
     }
 
     #[Test]

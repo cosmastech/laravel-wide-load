@@ -7,12 +7,13 @@ return [
     | Enabled
     |--------------------------------------------------------------------------
     |
-    | Master toggle for wide event logging. When disabled, report() will
-    | silently no-op.
+    | Master toggle for automatic wide event reporting. When disabled,
+    | events will not trigger automatic report and flush. Manual calls
+    | to report() will still work.
     |
     */
 
-    'enabled' => env('WIDE_LOAD_ENABLED', true),
+    'enabled' => (bool) env('WIDE_LOAD_ENABLED', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -22,8 +23,7 @@ return [
     | The log level used by the default report callback.
     |
     */
-
-    'log_level' => env('WIDE_LOAD_LOG_LEVEL', 'info'),
+    'log_level' => (string) env('WIDE_LOAD_LOG_LEVEL', 'info'),
 
     /*
     |--------------------------------------------------------------------------
@@ -36,7 +36,5 @@ return [
     | into queued jobs.
     |
     */
-
-    'serializable' => env('WIDE_LOAD_SERIALIZABLE', true),
-
+    'serializable' => (bool) env('WIDE_LOAD_SERIALIZABLE', true),
 ];

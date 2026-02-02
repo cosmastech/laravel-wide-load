@@ -51,8 +51,14 @@ class WideLoadServiceProvider extends ServiceProvider
     protected function registerEventListeners(): void
     {
         $reportAndFlush = static function (): void {
+            $container = Container::getInstance();
+
+            if (! $container->make('config')->boolean('wide-load.enabled', true)) { // @phpstan-ignore method.nonObject
+                return;
+            }
+
             /** @var WideLoad $wideLoad */
-            $wideLoad = Container::getInstance()->make(WideLoad::class);
+            $wideLoad = $container->make(WideLoad::class);
             $wideLoad->report();
             $wideLoad->flush();
         };

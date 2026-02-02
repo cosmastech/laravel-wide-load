@@ -9,8 +9,6 @@ use Illuminate\Container\Attributes\Scoped;
 class WideLoadConfig
 {
     public function __construct(
-        #[Config('wide-load.enabled', true)]
-        public bool $enabled = true,
         #[Config('wide-load.log_level', 'info')]
         public string $logLevel = 'info',
     ) {

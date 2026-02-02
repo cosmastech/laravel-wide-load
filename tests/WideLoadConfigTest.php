@@ -19,30 +19,11 @@ final class WideLoadConfigTest extends TestCase
     }
 
     #[Test]
-    public function defaultConfig_enabled_isTrue(): void
-    {
-        $config = $this->app->make(WideLoadConfig::class);
-
-        $this->assertTrue($config->enabled);
-    }
-
-    #[Test]
     public function defaultConfig_logLevel_isInfo(): void
     {
         $config = $this->app->make(WideLoadConfig::class);
 
         $this->assertSame('info', $config->logLevel);
-    }
-
-    #[Test]
-    public function customConfig_enabled_readsFalseFromConfig(): void
-    {
-        $this->app['config']->set('wide-load.enabled', false);
-        $this->app->forgetScopedInstances();
-
-        $config = $this->app->make(WideLoadConfig::class);
-
-        $this->assertFalse($config->enabled);
     }
 
     #[Test]

@@ -143,10 +143,6 @@ class WideLoad
 
     public function report(): void
     {
-        if (! $this->config->enabled) {
-            return;
-        }
-
         $data = $this->all();
 
         if ($this->reportCallback !== null) {
@@ -165,18 +161,6 @@ class WideLoad
     public function reportUsing(?Closure $callback): static
     {
         $this->reportCallback = $callback;
-
-        return $this;
-    }
-
-    public function enabled(): bool
-    {
-        return $this->config->enabled;
-    }
-
-    public function enable(bool $enabled = true): static
-    {
-        $this->config->enabled = $enabled;
 
         return $this;
     }

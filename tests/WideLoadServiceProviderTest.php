@@ -120,7 +120,6 @@ final class WideLoadServiceProviderTest extends TestCase
     public function disabledViaConfig_terminatingEvent_doesNotLog(): void
     {
         $this->app['config']->set('wide-load.enabled', false);
-        $this->app->forgetInstance(WideLoad::class);
 
         /** @var WideLoad $wideLoad */
         $wideLoad = $this->app->make(WideLoad::class);
