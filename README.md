@@ -2,7 +2,7 @@
 
 Wide event logging for Laravel — one log line per request, packed with everything that happened.
 
-Instead of scattering dozens of log lines throughout your request lifecycle, Wide Load collects key-value data as your application runs and emits a single, rich log entry when the request (or job) completes. This is the "wide event" or "canonical log line" pattern. For more on why this approach is better, see [loggingsucks.com](https://loggingsucks.com).
+Instead of scattering dozens of log lines throughout your request lifecycle, Wide Load collects key-value data as your application runs and emits a single, rich log entry when the request, artisan command, or job completes. This is the "wide event" or "canonical log line" pattern. For more on why this approach is better, see [loggingsucks.com](https://loggingsucks.com).
 
 ## Installation
 
@@ -70,6 +70,7 @@ $wideLoad->decrement('remaining_credits');
 Wide Load automatically calls `report()` and `flush()` on:
 
 - `Terminating` (end of HTTP request)
+- `CommandFinished` (end of Artisan command)
 - `JobProcessed` (successful queue job)
 - `JobFailed` (failed queue job)
 
