@@ -191,7 +191,7 @@ final class WideLoadTest extends TestCase
         $this->wideLoad->add('key', 'value');
         $this->wideLoad->report();
 
-        Event::assertDispatched(WideLoadReported::class, function (WideLoadReported $event) {
+        Event::assertDispatched(WideLoadReported::class, static function (WideLoadReported $event) {
             return $event->data === ['key' => 'value'];
         });
         Event::assertNotDispatched(NoWideLoadToReport::class);
@@ -239,7 +239,7 @@ final class WideLoadTest extends TestCase
     {
         $reported = [];
 
-        $this->wideLoad->reportUsing(function (array $data) use (&$reported): void {
+        $this->wideLoad->reportUsing(static function (array $data) use (&$reported): void {
             $reported = $data;
         });
 
