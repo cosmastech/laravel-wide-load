@@ -162,17 +162,11 @@ final class WideLoadTest extends TestCase
     }
 
     #[Test]
-    public function beforeReport_reported_returnsFalse(): void
-    {
-        $this->assertFalse($this->wideLoad->reported());
-    }
-
-    #[Test]
-    public function afterReport_reported_returnsTrue(): void
+    public function emptyData_report_doesNotLog(): void
     {
         $this->wideLoad->report();
 
-        $this->assertTrue($this->wideLoad->reported());
+        $this->assertFalse($this->logHandler->hasInfoRecords());
     }
 
     #[Test]

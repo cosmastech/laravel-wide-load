@@ -59,14 +59,7 @@ class WideLoadServiceProvider extends ServiceProvider
                 return;
             }
 
-            /** @var WideLoad $wideLoad */
-            $wideLoad = $container->make(WideLoad::class);
-
-            if ($wideLoad->reported()) {
-                return;
-            }
-
-            $wideLoad->report()->flush();
+            $container->make(WideLoad::class)->report()->flush();
         };
 
         Event::listen(Terminating::class, $reportAndFlush);
