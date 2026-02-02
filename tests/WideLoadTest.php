@@ -162,6 +162,20 @@ final class WideLoadTest extends TestCase
     }
 
     #[Test]
+    public function beforeReport_reported_returnsFalse(): void
+    {
+        $this->assertFalse($this->wideLoad->reported());
+    }
+
+    #[Test]
+    public function afterReport_reported_returnsTrue(): void
+    {
+        $this->wideLoad->report();
+
+        $this->assertTrue($this->wideLoad->reported());
+    }
+
+    #[Test]
     public function dataPresent_report_logsWideEvent(): void
     {
         $this->wideLoad->add('user_id', 42);

@@ -14,6 +14,8 @@ class WideLoad
     /** @var array<string, mixed> */
     protected array $data = [];
 
+    protected bool $reported = false;
+
     /**
      * @var (Closure(array<string, mixed>): void)|null
      */
@@ -127,11 +129,18 @@ class WideLoad
         return $this->increment($key, -$amount);
     }
 
+    public function reported(): bool
+    {
+        return $this->reported;
+    }
+
     /**
      * @return $this
      */
     public function report(): static
     {
+        $this->reported = true;
+
         $data = $this->all();
 
         if ($this->reportCallback !== null) {
