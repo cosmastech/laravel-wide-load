@@ -110,6 +110,29 @@ public function boot(): void
 
 Pass `null` to `reportUsing()` to revert to the default log behavior.
 
+## Events
+
+Wide Load dispatches events during the `report()` call that you can listen to:
+
+| Event | Description |
+|---|---|
+| `WideLoadReported` | Dispatched when `report()` is called with data. The event contains the `array $data` being reported. |
+| `NoWideLoadToReport` | Dispatched when `report()` is called but there is no data to report. |
+
+```php
+use Cosmastech\WideLoad\Events\WideLoadReported;
+use Cosmastech\WideLoad\Events\NoWideLoadToReport;
+use Illuminate\Support\Facades\Event;
+
+Event::listen(WideLoadReported::class, function (WideLoadReported $event) {
+    // $event->data contains the reported key-value pairs
+});
+
+Event::listen(NoWideLoadToReport::class, function () {
+    // No wide load data was collected during this lifecycle
+});
+```
+
 ## License
 
 MIT
