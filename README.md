@@ -1,4 +1,8 @@
-# Laravel Wide Load
+<p align="center">
+  <img src="assets/logo.png" alt="Wide Load for Laravel" width="256">
+</p>
+
+# Wide Load for Laravel
 
 Wide event logging for Laravel — one log line per request, packed with everything that happened.
 
