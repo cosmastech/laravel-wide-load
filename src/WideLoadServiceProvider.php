@@ -52,31 +52,18 @@ class WideLoadServiceProvider extends ServiceProvider
 
     protected function registerEventListeners(): void
     {
-        $reportAndFlush = static function (): void {
-            $container = Container::getInstance();
+        Event::listen(Terminating::class, WideLoadReporter::reportAndFlush(...));
+        Event::listen(CommandFinished::class, WideLoadReporter::reportAndFlush(...));
+        Event::listen(JobProcessed::class, WideLoadReporter::reportAndFlush(...));
+        Event::listen(JobFailed::class, WideLoadReporter::reportAndFlush(...));
 
-            if (! $container->make('config')->boolean('wide-load.auto_report', true)) { // @phpstan-ignore method.nonObject
-                return;
-            }
-
-            $container->make(WideLoad::class)->report()->flush();
-        };
-
-        Event::listen(Terminating::class, $reportAndFlush);
-        Event::listen(CommandFinished::class, $reportAndFlush);
-        Event::listen(JobProcessed::class, $reportAndFlush);
-        Event::listen(JobFailed::class, $reportAndFlush);
-
-        if ($this->app->make('config')->boolean('wide-load.serializable', true)) { // @phpstan-ignore method.nonObject
-            $this->registerSerializationListeners();
-        }
-    }
-
-    protected function registerSerializationListeners(): void
-    {
         Event::listen(
             ContextDehydrating::class,
             static function (ContextDehydrating $event): void {
+                if (! Container::getInstance()->make('config')->boolean('wide-load.serializable', true)) { // @phpstan-ignore method.nonObject (We trust that config is bound)
+                    return;
+                }
+
                 /** @var WideLoad $wideLoad */
                 $wideLoad = Container::getInstance()->make(WideLoad::class);
                 $data = $wideLoad->all();
@@ -90,6 +77,10 @@ class WideLoadServiceProvider extends ServiceProvider
         Event::listen(
             ContextHydrated::class,
             static function (ContextHydrated $event): void {
+                if (! Container::getInstance()->make('config')->boolean('wide-load.serializable', true)) { // @phpstan-ignore method.nonObject (We trust that config is bound)
+                    return;
+                }
+
                 /** @var array<string, mixed>|null $data */
                 $data = $event->context->getHidden(WideLoad::CONTEXT_KEY);
 

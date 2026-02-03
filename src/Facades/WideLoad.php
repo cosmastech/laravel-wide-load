@@ -2,6 +2,7 @@
 
 namespace Cosmastech\WideLoad\Facades;
 
+use Closure;
 use Cosmastech\WideLoad\WideLoad as ClassWideLoad;
 use Illuminate\Support\Facades\Facade;
 
@@ -16,14 +17,10 @@ use Illuminate\Support\Facades\Facade;
  * @method static array except(array $keys)
  * @method static \Cosmastech\WideLoad\WideLoad forget(string|array $key)
  * @method static \Cosmastech\WideLoad\WideLoad flush()
- * @method static \Cosmastech\WideLoad\WideLoad push(string $key, mixed ...$values)
  * @method static \Cosmastech\WideLoad\WideLoad increment(string $key, int $amount = 1)
  * @method static \Cosmastech\WideLoad\WideLoad decrement(string $key, int $amount = 1)
- * @method static void report()
- * @method static \Cosmastech\WideLoad\WideLoad reportUsing(callable $callback)
- * @method static bool enabled()
- * @method static \Cosmastech\WideLoad\WideLoad enable()
- * @method static \Cosmastech\WideLoad\WideLoad disable()
+ * @method static \Cosmastech\WideLoad\WideLoad report()
+ * @method static \Cosmastech\WideLoad\WideLoad reportUsing(?Closure $callback)
  *
  * @see ClassWideLoad
  */

@@ -98,7 +98,7 @@ For more control over HTTP request reporting, you can register the terminable mi
 
 ```php
 // bootstrap/app.php
-use Cosmastech\WideLoad\WideLoadMiddleware;
+use Cosmastech\WideLoad\Http\Middleware\WideLoadMiddleware;
 
 ->withMiddleware(function (Middleware $middleware) {
     $middleware->append(WideLoadMiddleware::class);

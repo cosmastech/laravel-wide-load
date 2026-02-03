@@ -3,7 +3,7 @@
 namespace Cosmastech\WideLoad\Tests;
 
 use Cosmastech\WideLoad\WideLoad;
-use Cosmastech\WideLoad\WideLoadMiddleware;
+use Cosmastech\WideLoad\Http\Middleware\WideLoadMiddleware;
 use Illuminate\Foundation\Events\Terminating;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

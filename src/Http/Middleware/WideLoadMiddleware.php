@@ -1,8 +1,9 @@
 <?php
 
-namespace Cosmastech\WideLoad;
+namespace Cosmastech\WideLoad\Http\Middleware;
 
 use Closure;
+use Cosmastech\WideLoad\WideLoad;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
