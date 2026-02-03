@@ -41,44 +41,23 @@ console command, your WideLoad will report during the shutdown.
 
 ## Usage
 
-### Via the Context macro
+### Via the Facade
 
 The quickest way to add data from anywhere in your app:
 
 ```php
-use Illuminate\Support\Facades\Context;
-
-Context::addWide('user_id', $user->id);
-Context::addWide(['plan' => 'pro', 'locale' => 'en']);
-
-// Or retrieve the WideLoad singleton via the Context facade:
-Context::wideLoad()->add([
-    'feature_flags' => [
-        'v2_admin' => false,
-        'api_access' => true,
-    ],
-]);
-```
-
-### Via the WideLoad instance
-
-Inject or resolve the `WideLoad` class directly for the full API:
-
-```php
-use Cosmastech\WideLoad\WideLoad;
-
-$wideLoad = resolve(WideLoad::class);
+use Cosmastech\WideLoad\Facades\WideLoad;
 
 // Add data
-$wideLoad->add('user_id', $user->id);
-$wideLoad->add(['plan' => 'pro', 'locale' => 'en']);
+WideLoad::add('user_id', $user->id);
+WideLoad::add(['plan' => 'pro', 'locale' => 'en']);
 
 // Add only if the key doesn't exist yet
-$wideLoad->addIf('request_id', Str::uuid());
+WideLoad::addIf('request_id', Str::uuid());
 
 // Increment a counter
-$wideLoad->increment('db_queries');
-$wideLoad->decrement('remaining_credits');
+WideLoad::increment('db_queries');
+WideLoad::decrement('remaining_credits');
 ```
 
 ### Automatic reporting
@@ -112,12 +91,12 @@ When the middleware is registered, it will report and flush during the `terminat
 By default, Wide Load writes to the Laravel log. To send data somewhere else (a metrics service, a dedicated wide event store, etc.), register a custom callback in your `AppServiceProvider`:
 
 ```php
-use Cosmastech\WideLoad\WideLoad;
+use Cosmastech\WideLoad\Facades\WideLoad;
 use Illuminate\Support\Facades\Log;
 
 public function boot(): void
 {
-    resolve(WideLoad::class)->reportUsing(static function (array $data): void {
+    WideLoad::reportUsing(static function (array $data): void {
         if (empty($data)) {
             return;
         }
