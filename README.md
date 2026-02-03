@@ -74,6 +74,21 @@ Wide Load automatically calls `report()` and `flush()` on:
 
 No manual reporting is needed in most cases.
 
+### Middleware
+
+For more control over HTTP request reporting, you can register the terminable middleware:
+
+```php
+// bootstrap/app.php
+use Cosmastech\WideLoad\WideLoadMiddleware;
+
+->withMiddleware(function (Middleware $middleware) {
+    $middleware->append(WideLoadMiddleware::class);
+})
+```
+
+When the middleware is registered, it will report and flush during the `terminate` phase. The `Terminating` event listener will automatically skip reporting if the middleware has already handled it, so there is no double-reporting.
+
 ### Custom reporter
 
 By default, Wide Load writes to the Laravel log. To send data somewhere else (a metrics service, a dedicated wide event store, etc.), register a custom callback in your `AppServiceProvider`:
@@ -94,6 +109,29 @@ public function boot(): void
 ```
 
 Pass `null` to `reportUsing()` to revert to the default log behavior.
+
+## Events
+
+Wide Load dispatches events during the `report()` call that you can listen to:
+
+| Event | Description |
+|---|---|
+| `WideLoadReporting` | Dispatched when `report()` is called with data. The event contains the `array $data` being reported. |
+| `NoWideLoadToReport` | Dispatched when `report()` is called but there is no data to report. |
+
+```php
+use Cosmastech\WideLoad\Events\WideLoadReporting;
+use Cosmastech\WideLoad\Events\NoWideLoadToReport;
+use Illuminate\Support\Facades\Event;
+
+Event::listen(WideLoadReporting::class, function (WideLoadReporting $event) {
+    // $event->data contains the reported key-value pairs
+});
+
+Event::listen(NoWideLoadToReport::class, function () {
+    // No wide load data was collected during this lifecycle
+});
+```
 
 ## License
 

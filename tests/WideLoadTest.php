@@ -2,8 +2,11 @@
 
 namespace Cosmastech\WideLoad\Tests;
 
+use Cosmastech\WideLoad\Events\NoWideLoadToReport;
+use Cosmastech\WideLoad\Events\WideLoadReporting;
 use Cosmastech\WideLoad\WideLoad;
 use Cosmastech\WideLoad\WideLoadConfig;
+use Illuminate\Support\Facades\Event;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -162,6 +165,39 @@ final class WideLoadTest extends TestCase
     }
 
     #[Test]
+    public function emptyData_report_doesNotLog(): void
+    {
+        $this->wideLoad->report();
+
+        $this->assertFalse($this->logHandler->hasInfoRecords());
+    }
+
+    #[Test]
+    public function emptyData_report_dispatchesNoWideLoadToReport(): void
+    {
+        Event::fake([NoWideLoadToReport::class, WideLoadReporting::class]);
+
+        $this->wideLoad->report();
+
+        Event::assertDispatched(NoWideLoadToReport::class);
+        Event::assertNotDispatched(WideLoadReporting::class);
+    }
+
+    #[Test]
+    public function dataPresent_report_dispatchesEvent(): void
+    {
+        Event::fake([WideLoadReporting::class, NoWideLoadToReport::class]);
+
+        $this->wideLoad->add('key', 'value');
+        $this->wideLoad->report();
+
+        Event::assertDispatched(WideLoadReporting::class, static function (WideLoadReporting $event) {
+            return $event->data === ['key' => 'value'];
+        });
+        Event::assertNotDispatched(NoWideLoadToReport::class);
+    }
+
+    #[Test]
     public function dataPresent_report_logsWideEvent(): void
     {
         $this->wideLoad->add('user_id', 42);
@@ -203,7 +239,7 @@ final class WideLoadTest extends TestCase
     {
         $reported = [];
 
-        $this->wideLoad->reportUsing(function (array $data) use (&$reported): void {
+        $this->wideLoad->reportUsing(static function (array $data) use (&$reported): void {
             $reported = $data;
         });
 
