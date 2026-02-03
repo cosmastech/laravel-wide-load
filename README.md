@@ -4,9 +4,12 @@
 
 # Wide Load for Laravel
 
-Wide event logging for Laravel — one log line per request, packed with everything that happened.
+Wide event logging for Laravel — one log line for an entire request, packed with everything that happened.
 
-Instead of scattering dozens of log lines throughout your request lifecycle, Wide Load collects key-value data as your application runs and emits a single, rich log entry when the request, artisan command, or job completes. This is the "wide event" or "canonical log line" pattern. For more on why this approach is better, see [loggingsucks.com](https://loggingsucks.com).
+Instead of scattering dozens of log lines throughout your request lifecycle, Wide Load collects key-value
+data as your application runs and emits a single, rich log entry when the request, artisan command, 
+or job completes. This is the "wide event" or "canonical log line" pattern. For more details on the benefits
+of this approach, see [loggingsucks.com](https://loggingsucks.com).
 
 ## Installation
 
@@ -99,20 +102,19 @@ By default, Wide Load writes to the Laravel log. To send data somewhere else (a 
 
 ```php
 use Cosmastech\WideLoad\WideLoad;
+use Illuminate\Support\Facades\Log;
 
 public function boot(): void
 {
-    app(WideLoad::class)->reportUsing(function (array $data): void {
+    resolve(WideLoad::class)->reportUsing(static function (array $data): void {
         if (empty($data)) {
             return;
         }
 
-        \Log::info("[Shutdown] Request details", $data);
+        Log::info("[Shutdown] Request details", $data);
     });
 }
 ```
-
-Pass `null` to `reportUsing()` to revert to the default log behavior.
 
 ## Events
 
