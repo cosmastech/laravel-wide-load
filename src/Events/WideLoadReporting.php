@@ -7,7 +7,7 @@ namespace Cosmastech\WideLoad\Events;
  *
  * The $data property contains the collected key-value pairs at the time of reporting.
  */
-class WideLoadReported
+class WideLoadReporting
 {
     /**
      * @param  array<string, mixed>  $data

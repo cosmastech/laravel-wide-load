@@ -3,7 +3,7 @@
 namespace Cosmastech\WideLoad\Tests;
 
 use Cosmastech\WideLoad\Events\NoWideLoadToReport;
-use Cosmastech\WideLoad\Events\WideLoadReported;
+use Cosmastech\WideLoad\Events\WideLoadReporting;
 use Cosmastech\WideLoad\WideLoad;
 use Cosmastech\WideLoad\WideLoadConfig;
 use Illuminate\Support\Facades\Event;
@@ -175,23 +175,23 @@ final class WideLoadTest extends TestCase
     #[Test]
     public function emptyData_report_dispatchesNoWideLoadToReport(): void
     {
-        Event::fake([NoWideLoadToReport::class, WideLoadReported::class]);
+        Event::fake([NoWideLoadToReport::class, WideLoadReporting::class]);
 
         $this->wideLoad->report();
 
         Event::assertDispatched(NoWideLoadToReport::class);
-        Event::assertNotDispatched(WideLoadReported::class);
+        Event::assertNotDispatched(WideLoadReporting::class);
     }
 
     #[Test]
     public function dataPresent_report_dispatchesEvent(): void
     {
-        Event::fake([WideLoadReported::class, NoWideLoadToReport::class]);
+        Event::fake([WideLoadReporting::class, NoWideLoadToReport::class]);
 
         $this->wideLoad->add('key', 'value');
         $this->wideLoad->report();
 
-        Event::assertDispatched(WideLoadReported::class, static function (WideLoadReported $event) {
+        Event::assertDispatched(WideLoadReporting::class, static function (WideLoadReporting $event) {
             return $event->data === ['key' => 'value'];
         });
         Event::assertNotDispatched(NoWideLoadToReport::class);

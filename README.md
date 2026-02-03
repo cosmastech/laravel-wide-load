@@ -116,15 +116,15 @@ Wide Load dispatches events during the `report()` call that you can listen to:
 
 | Event | Description |
 |---|---|
-| `WideLoadReported` | Dispatched when `report()` is called with data. The event contains the `array $data` being reported. |
+| `WideLoadReporting` | Dispatched when `report()` is called with data. The event contains the `array $data` being reported. |
 | `NoWideLoadToReport` | Dispatched when `report()` is called but there is no data to report. |
 
 ```php
-use Cosmastech\WideLoad\Events\WideLoadReported;
+use Cosmastech\WideLoad\Events\WideLoadReporting;
 use Cosmastech\WideLoad\Events\NoWideLoadToReport;
 use Illuminate\Support\Facades\Event;
 
-Event::listen(WideLoadReported::class, function (WideLoadReported $event) {
+Event::listen(WideLoadReporting::class, function (WideLoadReporting $event) {
     // $event->data contains the reported key-value pairs
 });
 
