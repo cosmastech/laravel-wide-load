@@ -32,7 +32,7 @@ final class WideLoadServiceProviderTest extends TestCase
     #[Test]
     public function defaultConfig_mergeConfig_hasExpectedDefaults(): void
     {
-        $this->assertTrue($this->app['config']->get('wide-load.enabled'));
+        $this->assertTrue($this->app['config']->get('wide-load.auto_report'));
         $this->assertSame('info', $this->app['config']->get('wide-load.log_level'));
     }
 
@@ -119,7 +119,7 @@ final class WideLoadServiceProviderTest extends TestCase
     #[Test]
     public function disabledViaConfig_terminatingEvent_doesNotLog(): void
     {
-        $this->app['config']->set('wide-load.enabled', false);
+        $this->app['config']->set('wide-load.auto_report', false);
 
         /** @var WideLoad $wideLoad */
         $wideLoad = $this->app->make(WideLoad::class);

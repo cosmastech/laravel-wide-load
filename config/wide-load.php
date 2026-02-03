@@ -4,16 +4,15 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Enabled
+    | Auto Report
     |--------------------------------------------------------------------------
     |
-    | Master toggle for automatic wide event reporting. When disabled,
+    | Toggle for automatic wide event reporting. When disabled, lifecycle
     | events will not trigger automatic report and flush. Manual calls
     | to report() will still work.
     |
     */
-
-    'enabled' => (bool) env('WIDE_LOAD_ENABLED', true),
+    'auto_report' => (bool) env('WIDE_LOAD_AUTO_REPORT', true),
 
     /*
     |--------------------------------------------------------------------------

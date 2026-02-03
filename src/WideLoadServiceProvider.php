@@ -55,7 +55,7 @@ class WideLoadServiceProvider extends ServiceProvider
         $reportAndFlush = static function (): void {
             $container = Container::getInstance();
 
-            if (! $container->make('config')->boolean('wide-load.enabled', true)) { // @phpstan-ignore method.nonObject
+            if (! $container->make('config')->boolean('wide-load.auto_report', true)) { // @phpstan-ignore method.nonObject
                 return;
             }
 

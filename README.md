@@ -31,7 +31,7 @@ This creates `config/wide-load.php` with the following options:
 
 | Option | Env Var | Default | Description |
 |---|---|---|---|
-| `enabled` | `WIDE_LOAD_ENABLED` | `true` | Master toggle for automatic reporting. When `false`, event-driven reporting is skipped. Manual calls to `report()` still work. |
+| `auto_report` | `WIDE_LOAD_AUTO_REPORT` | `true` | Toggle for automatic reporting. When `false`, lifecycle event-driven reporting is skipped. Manual calls to `report()` still work. |
 | `log_level` | `WIDE_LOAD_LOG_LEVEL` | `info` | Log level used by the default reporter. |
 | `log_message` | `WIDE_LOAD_LOG_MESSAGE` | `Request completed.` | Log message used by the default reporter. |
 | `serializable` | `WIDE_LOAD_SERIALIZABLE` | `true` | Carry wide load data across queued jobs via Laravel's Context serialization. |
