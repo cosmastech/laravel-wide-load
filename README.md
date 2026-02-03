@@ -36,6 +36,9 @@ This creates `config/wide-load.php` with the following options:
 | `log_message` | `WIDE_LOAD_LOG_MESSAGE` | `Request completed.` | Log message used by the default reporter. |
 | `serializable` | `WIDE_LOAD_SERIALIZABLE` | `true` | Carry wide load data across queued jobs via Laravel's Context serialization. |
 
+If you have `auto_report` enabled, at the end of an HTTP request, queued job, or
+console command, your WideLoad will report during the shutdown.
+
 ## Usage
 
 ### Via the Context macro
@@ -47,6 +50,14 @@ use Illuminate\Support\Facades\Context;
 
 Context::addWide('user_id', $user->id);
 Context::addWide(['plan' => 'pro', 'locale' => 'en']);
+
+// Or retrieve the WideLoad singleton via the Context facade:
+Context::wideLoad()->add([
+    'feature_flags' => [
+        'v2_admin' => false,
+        'api_access' => true,
+    ],
+]);
 ```
 
 ### Via the WideLoad instance
@@ -79,7 +90,7 @@ Wide Load automatically calls `report()` and `flush()` on:
 - `JobProcessed` (successful queue job)
 - `JobFailed` (failed queue job)
 
-No manual reporting is needed in most cases.
+No manual reporting is needed in most cases if you have `auto_report` enabled.
 
 ### Middleware
 
