@@ -294,4 +294,22 @@ final class WideLoadTest extends TestCase
         // And the method returns the WideLoad instance for chaining
         self::assertSame($this->wideLoad, $result);
     }
+
+    #[Test]
+    public function macro_canBeRegisteredAndCalled(): void
+    {
+        // Given we register a macro
+        WideLoad::macro('addTimestamp', function () {
+            /** @var WideLoad $this */
+            return $this->add('timestamp', '2026-01-01');
+        });
+
+        // When we call the macro
+        $result = $this->wideLoad->addTimestamp();
+
+        // Then the macro executes correctly
+        self::assertSame('2026-01-01', $this->wideLoad->get('timestamp'));
+        // And the macro returns the WideLoad instance for chaining
+        self::assertSame($this->wideLoad, $result);
+    }
 }
