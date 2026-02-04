@@ -9,10 +9,13 @@ use Illuminate\Container\Attributes\Scoped;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Traits\Macroable;
 
 #[Scoped]
 class WideLoad
 {
+    use Macroable;
+
     public const string CONTEXT_KEY = '__wide_load';
 
     /** @var array<string, mixed> */
