@@ -39,6 +39,18 @@ This creates `config/wide-load.php` with the following options:
 If you have `auto_report` enabled, at the end of an HTTP request, queued job, or
 console command, your WideLoad will report during the shutdown.
 
+You can also toggle auto-reporting at runtime. This is useful if only certain services would benefit from WideLoad data.
+
+```php
+use Cosmastech\WideLoad\Facades\WideLoad;
+
+// Disable auto-reporting for this request
+WideLoad::enableAutoReporting(false);
+
+// Re-enable it
+WideLoad::enableAutoReporting();
+```
+
 ## Usage
 
 ### Via the Facade
