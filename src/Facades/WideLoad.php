@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static \Cosmastech\WideLoad\WideLoad decrement(string $key, int $amount = 1)
  * @method static \Cosmastech\WideLoad\WideLoad report()
  * @method static \Cosmastech\WideLoad\WideLoad reportUsing(?Closure $callback)
+ * @method static \Cosmastech\WideLoad\WideLoad enableAutoReporting(bool $enabled = true)
  *
  * @see ClassWideLoad
  */

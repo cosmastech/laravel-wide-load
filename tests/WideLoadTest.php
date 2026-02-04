@@ -264,4 +264,34 @@ final class WideLoadTest extends TestCase
             'count' => 1,
         ], $this->wideLoad->all());
     }
+
+    #[Test]
+    public function enableAutoReporting_true_setsConfigToTrue(): void
+    {
+        // Given auto_report is disabled
+        $this->app['config']->set('wide-load.auto_report', false);
+
+        // When we enable auto reporting
+        $result = $this->wideLoad->enableAutoReporting();
+
+        // Then the config is updated
+        self::assertTrue($this->app['config']->get('wide-load.auto_report'));
+        // And the method returns the WideLoad instance for chaining
+        self::assertSame($this->wideLoad, $result);
+    }
+
+    #[Test]
+    public function enableAutoReporting_false_setsConfigToFalse(): void
+    {
+        // Given auto_report is enabled
+        self::assertTrue($this->app['config']->get('wide-load.auto_report'));
+
+        // When we disable auto reporting
+        $result = $this->wideLoad->enableAutoReporting(false);
+
+        // Then the config is updated
+        self::assertFalse($this->app['config']->get('wide-load.auto_report'));
+        // And the method returns the WideLoad instance for chaining
+        self::assertSame($this->wideLoad, $result);
+    }
 }

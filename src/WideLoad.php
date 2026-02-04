@@ -6,6 +6,7 @@ use Closure;
 use Cosmastech\WideLoad\Events\NoWideLoadToReport;
 use Cosmastech\WideLoad\Events\WideLoadReporting;
 use Illuminate\Container\Attributes\Scoped;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 
@@ -29,6 +30,7 @@ class WideLoad
 
     /**
      * @param  string|array<string, mixed>  $key
+     * @return $this
      */
     public function add(string|array $key, mixed $value = null): static
     {
@@ -43,6 +45,9 @@ class WideLoad
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function addIf(string $key, mixed $value): static
     {
         if (! $this->has($key)) {
@@ -99,6 +104,7 @@ class WideLoad
 
     /**
      * @param  string|array<int, string>  $key
+     * @return $this
      */
     public function forget(string|array $key): static
     {
@@ -111,6 +117,9 @@ class WideLoad
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function flush(): static
     {
         $this->data = [];
@@ -118,6 +127,9 @@ class WideLoad
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function increment(string $key, int $amount = 1): static
     {
         $this->data[$key] = ((int) $this->get($key, 0)) + $amount; // @phpstan-ignore cast.int (This is fine)
@@ -125,9 +137,27 @@ class WideLoad
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function decrement(string $key, int $amount = 1): static
     {
         return $this->increment($key, -$amount);
+    }
+
+    /**
+     * Enable auto-reporting of WideLoad at the end of the current life-cycle.
+     *
+     * This is a convenience method to update your app's config to report your
+     * WideLoad data at the end of the current life-cycle.
+     *
+     * @return $this
+     */
+    public function enableAutoReporting(bool $enabled = true): static
+    {
+        Config::set('wide-load.auto_report', $enabled);
+
+        return $this;
     }
 
     /**
