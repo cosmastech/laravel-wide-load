@@ -158,9 +158,14 @@ class WideLoad
      */
     public function enableAutoReporting(bool $enabled = true): static
     {
-        Config::set('wide-load.auto_report', $enabled);
+        $this->config->autoReport = $enabled;
 
         return $this;
+    }
+
+    public function isAutoReportingEnabled(): bool
+    {
+        return $this->config->autoReport;
     }
 
     /**

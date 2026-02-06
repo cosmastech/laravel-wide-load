@@ -6,14 +6,17 @@ use Illuminate\Container\Container;
 
 class WideLoadReporter
 {
+    /**
+     * Report and flush the WideLoad if auto_reporting is enabled.
+     */
     public static function reportAndFlush(): void
     {
-        $container = Container::getInstance();
+        $wideLoad = Container::getInstance()->get(WideLoad::class);
 
-        if (! $container->make('config')->boolean('wide-load.auto_report', true)) { // @phpstan-ignore method.nonObject
+        if (! $wideLoad->isAutoReportingEnabled()) {
             return;
         }
 
-        $container->make(WideLoad::class)->report()->flush();
+        $wideLoad->report()->flush();
     }
 }
