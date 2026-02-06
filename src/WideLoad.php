@@ -6,7 +6,6 @@ use Closure;
 use Cosmastech\WideLoad\Events\NoWideLoadToReport;
 use Cosmastech\WideLoad\Events\WideLoadReporting;
 use Illuminate\Container\Attributes\Scoped;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Traits\Macroable;
@@ -150,9 +149,6 @@ class WideLoad
 
     /**
      * Enable auto-reporting of WideLoad at the end of the current life-cycle.
-     *
-     * This is a convenience method to update your app's config to report your
-     * WideLoad data at the end of the current life-cycle.
      *
      * @return $this
      */
