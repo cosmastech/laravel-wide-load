@@ -9,6 +9,8 @@ use Illuminate\Container\Attributes\Scoped;
 class WideLoadConfig
 {
     public function __construct(
+        #[Config('wide-load.auto_report', false)]
+        public bool $autoReport = false,
         #[Config('wide-load.log_level', 'info')]
         public string $logLevel = 'info',
         #[Config('wide-load.log_message', 'Request completed.')]

@@ -36,20 +36,24 @@ This creates `config/wide-load.php` with the following options:
 | `log_message` | `WIDE_LOAD_LOG_MESSAGE` | `Request completed.` | Log message used by the default reporter. |
 | `serializable` | `WIDE_LOAD_SERIALIZABLE` | `true` | Carry wide load data across queued jobs via Laravel's Context serialization. |
 
-If you have `auto_report` enabled, at the end of an HTTP request, queued job, or
-console command, your WideLoad will report during the shutdown.
+### Enabling auto-reporting
 
-You can also toggle auto-reporting at runtime. This is useful if only certain services would benefit from WideLoad data.
+By default, auto-reporting is disabled. You can enable it globally via the config, or toggle it at runtime on a per-request/job basis:
 
 ```php
 use Cosmastech\WideLoad\Facades\WideLoad;
 
-// Disable auto-reporting for this request
+// Enable auto-reporting for this lifecycle (request, job, or command)
+WideLoad::enableAutoReporting();
+
+// Disable it
 WideLoad::enableAutoReporting(false);
 
-// Re-enable it
-WideLoad::enableAutoReporting();
+// Check if enabled
+WideLoad::isAutoReportingEnabled();
 ```
+
+Since `WideLoad` is a [scoped singleton](https://laravel.com/docs/container#scoped-bindings), the auto-reporting flag resets between requests and queue jobs. This makes it safe to enable reporting in specific services without affecting other jobs processed by the same worker.
 
 ## Usage
 
