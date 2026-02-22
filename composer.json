@@ -36,7 +36,7 @@
         "test": "phpunit",
         "lint": "pint",
         "lint-check": "pint --test",
-        "static-analysis": "phpstan analyse",
+        "static-analysis": "phpstan analyze",
         "facade-docs": "@php vendor/bin/facade.php Cosmastech\\\\LaravelWideLoad\\\\Facades\\\\WideLoad"
     },
     "extra": {

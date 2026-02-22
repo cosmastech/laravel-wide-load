@@ -14,7 +14,7 @@ final class WideLoadReporterTest extends TestCase
     public function autoReportEnabled_reportAndFlush_reportsAndFlushes(): void
     {
         // Given auto_report is enabled on the instance
-        WideLoadFacade::enableAutoReporting(true);
+        WideLoadFacade::enableAutoReporting();
 
         // And we have bound some data to WideLoad
         WideLoadFacade::add('key', 'value');

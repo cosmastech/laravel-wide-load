@@ -6,7 +6,7 @@ use Closure;
 use Cosmastech\WideLoad\Events\NoWideLoadToReport;
 use Cosmastech\WideLoad\Events\WideLoadReporting;
 use Illuminate\Container\Attributes\Scoped;
-use Illuminate\Support\Facades\Event;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Traits\Macroable;
 
@@ -27,6 +27,7 @@ class WideLoad
 
     public function __construct(
         protected readonly WideLoadConfig $config,
+        protected readonly ?Dispatcher $dispatcher,
     ) {
     }
 
@@ -172,12 +173,12 @@ class WideLoad
         $data = $this->all();
 
         if ($data === []) {
-            Event::dispatch(new NoWideLoadToReport());
+            $this->dispatcher?->dispatch(new NoWideLoadToReport());
 
             return $this;
         }
 
-        Event::dispatch(new WideLoadReporting($data));
+        $this->dispatcher?->dispatch(new WideLoadReporting($data));
 
         if ($this->reportCallback !== null) {
             call_user_func($this->reportCallback, $data);
