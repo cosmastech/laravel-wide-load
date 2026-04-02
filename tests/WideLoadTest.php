@@ -20,6 +20,7 @@ final class WideLoadTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        Event::fake([WideLoadReporting::class, NoWideLoadToReport::class]);
 
         $this->wideLoad = $this->app->make(WideLoad::class);
     }
@@ -175,8 +176,6 @@ final class WideLoadTest extends TestCase
     #[Test]
     public function emptyData_report_dispatchesNoWideLoadToReport(): void
     {
-        Event::fake([NoWideLoadToReport::class, WideLoadReporting::class]);
-
         $this->wideLoad->report();
 
         Event::assertDispatched(NoWideLoadToReport::class);
@@ -186,14 +185,13 @@ final class WideLoadTest extends TestCase
     #[Test]
     public function dataPresent_report_dispatchesEvent(): void
     {
-        Event::fake([WideLoadReporting::class, NoWideLoadToReport::class]);
-
         $this->wideLoad->add('key', 'value');
         $this->wideLoad->report();
 
-        Event::assertDispatched(WideLoadReporting::class, static function (WideLoadReporting $event) {
-            return $event->data === ['key' => 'value'];
-        });
+        Event::assertDispatched(
+            WideLoadReporting::class,
+            static fn (WideLoadReporting $event): bool => $event->data === ['key' => 'value']
+        );
         Event::assertNotDispatched(NoWideLoadToReport::class);
     }
 
@@ -211,7 +209,7 @@ final class WideLoadTest extends TestCase
     #[Test]
     public function debugLogLevel_report_usesConfiguredLevel(): void
     {
-        $wideLoad = new WideLoad(new WideLoadConfig(logLevel: 'debug'));
+        $wideLoad = new WideLoad(new WideLoadConfig(logLevel: 'debug'), null);
 
         $wideLoad->add('key', 'value');
         $wideLoad->report();
@@ -224,7 +222,7 @@ final class WideLoadTest extends TestCase
     #[Test]
     public function customLogMessage_report_usesConfiguredMessage(): void
     {
-        $wideLoad = new WideLoad(new WideLoadConfig(logMessage: 'Lifecycle finished.'));
+        $wideLoad = new WideLoad(new WideLoadConfig(logMessage: 'Lifecycle finished.'), null);
 
         $wideLoad->add('key', 'value');
         $wideLoad->report();

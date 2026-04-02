@@ -38,7 +38,7 @@ This creates `config/wide-load.php` with the following options:
 
 ### Enabling auto-reporting
 
-By default, auto-reporting is disabled. You can enable it globally via the config, or toggle it at runtime on a per-request/job basis:
+By default, auto-reporting is enabled. You can disable it globally via the config, or toggle it at runtime on a per-request/job basis:
 
 ```php
 use Cosmastech\WideLoad\Facades\WideLoad;
