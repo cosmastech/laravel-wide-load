@@ -166,6 +166,10 @@ class WideLoad
     }
 
     /**
+     * Report the current wide-load data without clearing it.
+     *
+     * Call flush() after reporting if the same lifecycle should not emit this data again later.
+     *
      * @return $this
      */
     public function report(): static
